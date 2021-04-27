@@ -62,22 +62,6 @@ print(v3)
 
 
 
-### Operation within vector
-# product
-v1 = c(1,2,3,4,5)
-v2 = v1*2
-print(v2)
-# v2: [1]  2  4  6  8 10
-
-v3 = v1 + v2
-print(v3)
-# v3: [1]  3  6  9 12 15
-
-
-v3 = v1 * v2
-print(v3)
-# v3: [1]  2  8 18 32 50
-
 
 
 #--------------# Section 4 Sequence
@@ -233,6 +217,230 @@ foo = 1:10
 foo.length = length(foo)
 print(foo.length)
 # [1] 10
+
+
+
+
+### Indexing
+#		Remember!! Index starts from 1. Different from python
+foo = c(3,4,5,6,7)
+first_element = foo[1]
+print(first_element)
+# [1] 3
+
+
+# negative indexing value in R is not the last nth element.
+# it will generate the sequence without the nth element.
+# "-" sign stands for except... Sucks
+
+# Example, this will generate foo without the second value
+# foo = c(3,4,5,6,7) 
+foo.negative = foo[-2]
+print(foo.negative)
+# [1] 3 5 6 7
+
+
+
+
+## spliting
+
+# Method 1
+# first : last, 	unlike python, the "last" number can be selected.
+# Here, foo.1 shows the third to the fifth number in foo.
+foo = c(3,4,5,6,7,8)
+foo.1 = foo[3:5]
+print(foo.1)
+# [1] 5 6 7
+
+
+
+# Method 2
+# specify specific location in a vector.
+# I need foo.2 to be the first, the third, and the fifth number in foo
+# I can specify the location in a vector c(1,3,5)
+# Hence, foo.2 gives me 3,5,7.
+
+foo = c(3,4,5,6,7,8)
+foo.2 = foo[c(1,3,5)]
+print(foo.2)
+# [1] 3 5 7
+
+
+
+# Method 3
+# Use negative sign to delete specific elements in a vector or sequence.
+# Here, I delete the first, the third, and the fifth elements from foo.
+# Hence, foo.3 is left with 4,6,8
+
+foo = c(3,4,5,6,7,8)
+foo.3 = foo[-c(1,3,5)]
+print(foo.3)
+# [1] 4 6 8
+
+
+
+
+
+
+## Modify elements in a vector by indexing
+# Here, I want to change the value from the third to the fifth to zero,
+# I can assign zero to specific elements by indexing.
+
+# Method 1
+foo = c(3,4,50,68,70,8)
+foo[3:5] = 0
+print(foo)
+# [1] 3 4 0 0 0 8
+
+
+# Method 2
+# By using c(), you can assign different values, e.g., c(1,5,2)
+# But the must have same number of elements.
+foo = c(3,4,50,68,70,8)
+foo[3:5] = c(0,0,0)
+print(foo)
+
+
+
+
+
+
+
+#--------------# Section 5 Operation within vector
+# production
+v1 = c(1,2,3,4,5)
+v2 = v1*2
+print(v2)
+# v2: [1]  2  4  6  8 10
+
+
+v3 = v1 * v2
+print(v3)
+# v3: [1]  2  8 18 32 50
+
+
+
+# product of all elements in the vector.
+# Here, 1*2*3 = 6
+foo = 1:3
+foo.3 = prod(foo)
+print(foo.3)
+# [1] 6
+
+
+
+# addition
+v3 = v1 + v2
+print(v3)
+# v3: [1]  3  6  9 12 15
+
+
+
+# production tricks
+# foo*c(-1,1,-1) will multiply the first element in foo by -1, multiply the second
+# element by 1, and the third one by -1.
+# Then, it does the same thing for the next three elements.
+# !!! Notice, by using this method, length of foo must be divisible by the length of c().
+# Here 9 is divisible by 3
+foo = 1:9
+# [1] 1 2 3 4 5 6 7 8 9
+foo.1 = foo * c(-1,1,-1)
+print(foo.1)
+# [1] -1  2 -3 -4  5 -6 -7  8 -9
+
+
+
+
+
+
+# Summation
+foo = 1:9
+foo.2 = sum(foo)
+print(foo.2)
+# [1] 45
+
+
+
+
+
+
+
+#--------------# Section 6 Matrix
+
+### Generate a matrix
+# syntax: matrix(obj, nrow = , ncol = , byrow = )
+
+
+# Method 1
+# Default is byrow = FALSE, so that numbers are vertically continuous (col)
+matrix.1 = matrix(1:12, nrow = 3, ncol = 4)
+print(matrix.1)
+
+#     [,1] [,2] [,3] [,4]
+#[1,]    1    4    7   10
+#[2,]    2    5    8   11
+#[3,]    3    6    9   12
+
+
+
+
+# Method 2
+# If I specify byrow = TRUE
+matrix.2 = matrix(1:12, nrow = 3, ncol = 4, byrow = TRUE)
+print(matrix.2)
+#     [,1] [,2] [,3] [,4]
+#[1,]    1    2    3    4
+#[2,]    5    6    7    8
+#[3,]    9   10   11   12
+
+
+
+
+# Method 3
+# rbind() and cbind()
+# rbind() row binding will combine multiple vectors row by row.
+# Notice!! It will, by default, use variable names as indxing number.
+# Here, vector a,b,c would be each row in matrix.3
+a = c(1,2)
+b = c(10,20)
+c = c(5,6)
+matrix.3 = rbind(a,b,c)
+print(matrix.3)
+#  [,1] [,2]
+#a    1    2
+#b   10   20
+#c    5    6
+
+
+matrix.3 = rbind(c(1,2),c(10,20),c(5,6))
+print(matrix.3)
+#     [,1] [,2]
+#[1,]    1    2
+#[2,]   10   20
+#[3,]    5    6
+
+
+
+
+
+
+
+# cbind() would consider vector a,b,c as column vectors
+
+a = c(1,2)
+b = c(10,20)
+c = c(5,6)
+matrix.4 = cbind(a,b,c)
+print(matrix.4)
+
+#     a  b c
+#[1,] 1 10 5
+#[2,] 2 20 6
+
+
+
+
+
 
 
 
