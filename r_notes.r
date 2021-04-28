@@ -1,3 +1,63 @@
+#--------------#	Section 0 Useful functions
+
+### which(obj)
+#	obj must be a logical vector
+# Given foo, I want to find the index of element == 230
+
+foo = c(1:9,100,230,233)
+result = which(foo == 230)
+print(result)
+# [1] 11
+
+# It return 11, because 230 is the 11th element in foo
+
+
+
+
+# arr.ind in which() 
+# arr.ind = False by default.
+#Instead of return the index, if arr.ind = TRUE, it will return specific location.
+#suppose I want to locate elemnts are equal either 5 or 10 in the array,
+#by setting arr.ind = T, each row of the return value is the indexing info of one element.
+#e.g., the first row tells us the first element is located at the 2nd row, 2nd column of the 1st matrix (5)
+#the second qualified element is located at the 1st row, the 2nd column of the 2nd matrix (10)
+
+
+foo = array(1:12,dim = c(3,2,2))
+print(foo)
+#, , 1
+#
+#     [,1] [,2]
+#[1,]    1    4
+#[2,]    2    5
+#[3,]    3    6
+#
+#, , 2
+#
+#     [,1] [,2]
+#[1,]    7   10
+#[2,]    8   11
+#[3,]    9   12
+
+result = which(foo == 5 | foo == 10, arr.ind = T)
+print(result)
+#     dim1 dim2 dim3
+#[1,]    2    2    1
+#[2,]    1    2    2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #--------------#	Section 1 Utilities
 ###	print current path
 #		In python: os.getcwd()
@@ -276,6 +336,36 @@ foo = c(3,4,5,6,7,8)
 foo.3 = foo[-c(1,3,5)]
 print(foo.3)
 # [1] 4 6 8
+
+
+# Method 4
+# Extract elements using relation operators
+# Note, it return a list, not a matrix. No more structures
+foo = matrix(1:9,3,3)
+print(foo)
+foo.1 = foo[foo>3]
+print(foo.1)
+
+
+
+
+
+# Method 5
+# Extract the element one after the next one.
+# T: TRUE, extract this element
+# F: FALSE, skip this element
+foo = c(1:9)
+print(foo)
+foo.1 = foo[c(T,F)]
+print(foo.1)
+# foo: 		[1] 1 2 3 4 5 6 7 8 9
+# foo.1:	[1] 1 3 5 7 9
+
+
+
+
+
+
 
 
 
@@ -685,6 +775,268 @@ print(iden.matrix)
 
 
 ### Matrix Operation
+
+## Matrix multiplication
+# ignore scalar production. Too simple.
+
+
+# Here's how to multiplication among matrices dot() in python
+matrix.1 = matrix(1:6, 2,3)
+print(matrix.1)
+#     [,1] [,2] [,3]
+#[1,]    1    3    5
+#[2,]    2    4    6
+matrix.2 = matrix(1:6, 3,2)
+print(matrix.2)
+#     [,1] [,2]
+#[1,]    1    4
+#[2,]    2    5
+#[3,]    3    6
+
+
+matrix.production = matrix.1%*%matrix.2
+print(matrix.production)
+#     [,1] [,2]
+#[1,]   22   49
+#[2,]   28   64
+
+
+
+
+
+
+
+
+
+## Inverse of a Matrix
+# AA^-1 = I
+# invertible matrix is also called non-singular matrix. Must be full rank.
+# Use Gaussian elimination to solve the matrix first
+# solve() will return the inverse of a matrix. You can check if A%*%solve(A) = I
+foo = matrix(c(3,4,1,2), 2,2)
+print(foo)
+#     [,1] [,2]
+#[1,]    3    1
+#[2,]    4    2
+foo.solved = solve(foo)
+print(foo.solved)
+#     [,1] [,2]
+#[1,]    1 -0.5
+#[2,]   -2  1.5
+
+
+print(foo%*%foo.solved)
+#     [,1] [,2]
+#[1,]    1    0
+#[2,]    0    1
+# The product is an identity matrix. Nice.
+
+
+
+
+
+
+
+#--------------# Section 7 Multidimensional Array
+## Multi-dimensional Array. Consider multidimensional in numpy.
+
+## Array generation
+# syntax:
+#	array(obj, dim(row,col,dimension))
+# length(obj) must be equal to row*col*dimension
+ar1 = array(1:24, dim = c(3,4,2))
+print(ar1)
+#, , 1
+#
+#     [,1] [,2] [,3] [,4]
+#[1,]    1    4    7   10
+#[2,]    2    5    8   11
+#[3,]    3    6    9   12
+#
+#, , 2
+#
+#     [,1] [,2] [,3] [,4]
+#[1,]   13   16   19   22
+#[2,]   14   17   20   23
+#[3,]   15   18   21   24
+
+
+
+
+
+## Array Slicing 
+
+
+# syntax:
+# array[row,col,dim]
+# Suppose I want to extrac 13 from ar1
+# 13 is at 1st row, 1st col, and 2nd dimension, hence, ar1[1,1,2]
+
+target = ar1[1,1,2]
+print(target)
+
+
+
+# Extract submatrix
+# leave dim empty means extract from all dimensions
+target = ar1[2:3,2:3,]
+print(target)
+
+#, , 1
+#
+#     [,1] [,2]
+#[1,]    5    8
+#[2,]    6    9
+#
+#, , 2
+#
+#     [,1] [,2]
+#[1,]   17   20
+#[2,]   18   21
+
+
+
+
+
+
+
+
+#--------------# Section 8 Logical Values
+
+### Bool
+## T and F are in short for TRUE and FALSE
+
+a = T
+print(a)
+# [1] TRUE
+
+b = F
+print(b)
+# [1] FALSE
+
+
+
+
+### Relation Operators
+# same as in python
+# 	==
+# 	!=
+# 	>
+# 	<
+# 	>=
+# 	<=
+
+
+foo = matrix(1:9, 3,3)
+print(foo)
+foo>5
+#     [,1] [,2] [,3]
+#[1,]    1    4    7
+#[2,]    2    5    8
+#[3,]    3    6    9
+#      [,1]  [,2] [,3]
+#[1,] FALSE FALSE TRUE
+#[2,] FALSE FALSE TRUE
+#[3,] FALSE  TRUE TRUE
+
+
+
+
+
+
+### Logical Operators
+# Same as in python
+#		&		and (intersection)
+#		&&	and
+#		|		or (union)
+#		||	or
+#		!		not
+
+
+
+
+
+
+
+
+
+#--------------# Section 9 Characters
+## Length of a string
+# length() does not work!! Oh my poor R... python is better.
+# Use nchar() to count length of a string
+
+
+foo = 'hello world'
+result = length(foo)
+print(result)
+# [1] 1
+
+string.length = nchar(foo)
+print(string.length)
+# [1] 11
+
+
+
+# Also, you cannot use string*n to append multiple string behind. What a horrible language...
+#	a = 'hi'*2
+#	print(a)
+#Error in "hi" * 2 : non-numeric argument to binary operator
+#Execution halted
+
+
+
+
+
+### Concatenation
+
+## cat() 
+# It delivery the output to console without return any value. It cannot be assign to a variable
+cat('hello', 'world')
+# hello world%
+a = cat('hello', 'world')
+print(a)
+# hello worldNULL
+
+
+
+## paste()
+# syntax: paste(obj, sep=)
+# sep can be anything to seperate the elements. It is ' ' by default
+# It will return the concatenation result to a variable, which is usable!!
+a = paste('hello', 'world')
+print(a)
+# [1] "hello world"
+
+a = paste('hello', 'world', sep = '--')
+print(a)
+# [1] "hello--world"
+
+
+
+
+## substrings and matching
+# you can replace a single words by sub(pattern=, replacement=,obj)
+# "replacement" specifies what you want to replace the pattern.
+# This function only replace the first matched elements
+
+foo = 'www.baidu.com -- baidu'
+a = sub(pattern = 'baidu', replacement = 'sina', x = foo)
+print(a)
+# [1] "www.sina.com -- baidu"
+
+# Or you can write in a simplier way
+b = sub('baidu', 'sina', foo)
+print(b)
+# [1] "www.sina.com -- baidu"
+
+
+
+# If yo want to replace all matched terms, use gsub()
+result = gsub('baidu', 'sina', foo)
+print(result)
+# [1] "www.sina.com -- sina"
+
+
 
 
 
