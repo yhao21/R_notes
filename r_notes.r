@@ -397,7 +397,7 @@ print(matrix.2)
 
 
 # Method 3
-# rbind() and cbind()
+# rbind(obj1, obj2, obj3,...) and cbind()
 # rbind() row binding will combine multiple vectors row by row.
 # Notice!! It will, by default, use variable names as indxing number.
 # Here, vector a,b,c would be each row in matrix.3
@@ -420,7 +420,13 @@ print(matrix.3)
 #[3,]    5    6
 
 
-
+matrix.4 = rbind(c(1,2,4),11:13,c(100,101,102),41:43)
+print(matrix.4)
+#     [,1] [,2] [,3]
+#[1,]    1    2    4
+#[2,]   11   12   13
+#[3,]  100  101  102
+#[4,]   41   42   43
 
 
 
@@ -440,7 +446,245 @@ print(matrix.4)
 
 
 
+### Dimension of the matrix. (df.shape in python)
+# The shape of the matrix. Return two numbers: rows, columns
+# Here, row = 4, columns = 3
+matrix.5 = rbind(c(1,2,4),11:13,c(100,101,102),41:43)
+dim(matrix.5)
+#[1] 4 3
 
+
+# to get the row number:
+# Method 1
+# Love this
+dim(matrix.5)[1]
+# [1] 4
+
+
+# Method 2
+# Fuck this. This method sucks.
+nrow(matrix.5)
+# [1] 4
+
+
+
+# to get the column number:
+dim(matrix.5)[2]
+ncol(matrix.5)
+
+
+
+
+
+### Matrix Spliting and Indexing
+
+# Generate a 3 rows, 5 columns matrix
+foo = matrix(c(1:15), 3,5, byrow = TRUE)
+print(foo)
+#     [,1] [,2] [,3] [,4] [,5]
+#[1,]    1    2    3    4    5
+#[2,]    6    7    8    9   10
+#[3,]   11   12   13   14   15
+
+
+
+
+
+# Indexing by row and col
+# 8 is in the second row and the third columns
+
+eight = foo[2,3]
+print(eight)
+# [1] 8
+
+
+
+
+## Spliting
+# Syntax: matrix[row,col]
+
+# Method 1
+# If want to extract the second columns, in python df.iloc[:,1]
+# Here, 
+second.column = foo[,2]
+print(second.column)
+# foo:
+#     [,1] [,2] [,3] [,4] [,5]
+#[1,]    1    2    3    4    5
+#[2,]    6    7    8    9   10
+#[3,]   11   12   13   14   15
+
+# second.column:
+# [1]  2  7 12
+
+
+# Extract column 2 to 4
+foo.1 = foo[,2:4]
+print(foo.1)
+#     [,1] [,2] [,3]
+#[1,]    2    3    4
+#[2,]    7    8    9
+#[3,]   12   13   14
+
+
+
+
+# Method 2
+# Specify specific columns or rows using vector
+# foo:
+#     [,1] [,2] [,3] [,4] [,5]
+#[1,]    1    2    3    4    5
+#[2,]    6    7    8    9   10
+#[3,]   11   12   13   14   15
+
+# Here extract the first and the third row
+foo.2 = foo[c(1,3),]
+print(foo.2)
+#     [,1] [,2] [,3] [,4] [,5]
+#[1,]    1    2    3    4    5
+#[2,]   11   12   13   14   15
+
+
+
+
+
+
+# Method 3:		Extract diagonal values
+# This ONLY works for a square matrix.
+
+foo = matrix(1:9, 3,3, byrow = TRUE)
+print(foo)
+diagonal_value = diag(foo)
+print(diagonal_value)
+# foo:
+#     [,1] [,2] [,3]
+#[1,]    1    2    3
+#[2,]    4    5    6
+#[3,]    7    8    9
+
+# diagonal value:
+# [1] 1 5 9
+
+
+
+# Method 4
+# Extract by remove specific columns or rows, or submatrix
+foo = matrix(1:25, 5,5, byrow = TRUE)
+print(foo)
+#     [,1] [,2] [,3] [,4] [,5]
+#[1,]    1    2    3    4    5
+#[2,]    6    7    8    9   10
+#[3,]   11   12   13   14   15
+#[4,]   16   17   18   19   20
+#[5,]   21   22   23   24   25
+
+# Suppose I want to extract this submatrix from foo:
+# 7    8    9
+#12   13   14
+#17   18   19
+# I can delete 1st and 5th row and columns
+foo.1 = foo[-c(1,5),-c(1,5)]
+print(foo.1)
+#     [,1] [,2] [,3]
+#[1,]    7    8    9
+#[2,]   12   13   14
+#[3,]   17   18   19
+
+
+
+### Modify elements in a matrix
+# Method 1
+#     [,1] [,2] [,3] [,4] [,5]
+#[1,]    1    2    3    4    5
+#[2,]    6    7    8    9   10
+#[3,]   11   12   13   14   15
+#[4,]   16   17   18   19   20
+#[5,]   21   22   23   24   25
+foo = matrix(1:25, 5,5, byrow = TRUE)
+print(foo)
+# supose I want to change 2, 13,14,18,19 to 100
+foo[2,2] = 100
+foo[3:4,3:4] = 100
+print(foo)
+#     [,1] [,2] [,3] [,4] [,5]
+#[1,]    1    2    3    4    5
+#[2,]    6  100    8    9   10
+#[3,]   11   12  100  100   15
+#[4,]   16   17  100  100   20
+#[5,]   21   22   23   24   25
+
+
+
+# Method 2
+# LHS locate (1,1),(3,1),(1,3),(3,3) in the matrix
+# Then change their values in the order of -7 then 7.
+# Hence, 
+#	(1,1),(3,1),(1,3),(3,3)
+#		7			-7		7			-7
+foo[c(1,3),c(1,3)] = c(-7,7)
+print(foo)
+#     [,1] [,2] [,3] [,4] [,5]
+#[1,]   -7    2   -7    4    5
+#[2,]    6  100    8    9   10
+#[3,]    7   12    7  100   15
+#[4,]   16   17  100  100   20
+#[5,]   21   22   23   24   25
+
+
+
+
+# Method 3
+# Here specify the 1st and 2nd in reverse order, so, overwrite the 2nd column first
+# In this order:
+# (1,2)	(3,2)	(1,2)	(1,1)
+foo[c(1,3),2:1] = c(666,-666,777,-777)
+print(foo)
+
+
+
+
+
+
+
+### Matrix Transpose
+foo = matrix(1:8, 2,4)
+print(foo)
+#     [,1] [,2] [,3] [,4]
+#[1,]    1    3    5    7
+#[2,]    2    4    6    8
+
+foo.trans = t(foo)
+print(foo.trans)
+#     [,1] [,2]
+#[1,]    1    2
+#[2,]    3    4
+#[3,]    5    6
+#[4,]    7    8
+
+
+
+
+
+
+
+### Identity Matrix
+# Previously we use diag(matrix) to extract the diagonal value in a matrix.
+# Here we use it to create identity matrix.
+# diag(n) will generate a n*n identity matrix, where "n" is an positive number.
+
+iden.matrix = diag(4)
+print(iden.matrix)
+#     [,1] [,2] [,3] [,4]
+#[1,]    1    0    0    0
+#[2,]    0    1    0    0
+#[3,]    0    0    1    0
+#[4,]    0    0    0    1
+
+
+
+
+
+### Matrix Operation
 
 
 
