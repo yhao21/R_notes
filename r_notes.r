@@ -1,5 +1,39 @@
 #--------------#	Section 0 Useful functions
 
+# os.path.join() in R
+# list files under current directory
+myfiles = list.files(getwd())
+print(myfiles)
+# [1] "NewCleanData.csv" "r_notes.r"
+
+
+# form abs path for each file using file.path()
+# file.path() is same as os.path.join()
+
+for(item in myfiles){
+	file_path = file.path(getwd(), item)
+	print(file_path)
+}
+#[1] "/home/synferlo/git/R_notes/NewCleanData.csv"
+#[1] "/home/synferlo/git/R_notes/r_notes.r"
+
+
+
+
+## any() and all()
+foo = c(1,10,15,20,50)
+# any(condition), return TRUE as long as at least one element satisfies the condition.
+any(foo>2)
+# [1] TRUE
+
+
+
+all(foo > 2)
+# [1] FALSE
+
+
+
+
 ### which(obj)
 #	obj must be a logical vector
 # Given foo, I want to find the index of element == 230
@@ -14,6 +48,99 @@ print(result)
 
 
 
+
+#-----------------------
+### combine multiple vectors
+
+a = c(1,2,3)
+b = c(5,6,7)
+c = c(10, 12, 15)
+d = c(a,b,c)
+print(d)
+# [1]  1  2  3  5  6  7 10 12 15
+
+
+
+
+
+#-----------------------
+### Convert variable types
+# sapply(obj, type)
+
+# age used to be a character type, now I want to convert it to numeric
+df = data.frame(
+								name	= c('synferlo', 'harry', 'adam'),
+								age		= c(24,26,30),
+								gender= c('M', 'F', 'M')
+)
+df$age = sapply(df$age, as.numeric)
+
+
+
+#-----------------------
+### is.type()		check type
+
+#	is.infinite(obj)		for infinity
+#	is.nan(obj)					for NaN
+#	is.na(obj)					for NA
+# is.integer()
+# is.numeric()
+# is.matrix()
+# is.data.frame()
+# is.vector()
+# is.logical()
+
+
+
+### as.type()		convert to specific type
+
+# as.numeric()
+# as.character()
+# as.logical()
+# as.vector()
+# as.data.frame()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#-----------------------
+# Check type:
+# Common types:	integer, numeric, character, logical, factor, list, etc.
+
+df = data.frame(
+								name = c('synferlo', 'harry'),
+								age = c(20, 30)
+)
+print(class(df))
+# [1] "data.frame"
+
+
+foo = c(10,100, 33)
+print(class(foo))
+# [1] "numeric"
+
+
+
+
+
+
+
+
+
+
+#-----------------------
 # arr.ind in which() 
 # arr.ind = False by default.
 #Instead of return the index, if arr.ind = TRUE, it will return specific location.
@@ -1108,6 +1235,11 @@ print(foo.fac[2] > foo.fac[1])
 
 
 ### Cutting, regrouping
+
+# cut(obj, breaks = , right = , include.lowest = , labels = )
+
+
+
 # you can use cut() to regroup elements.
 # I want to regroup them into four groups:
 # (0,3], (3,10], (10, 40], (40, 300]
@@ -1120,6 +1252,547 @@ print(foo.regroup)
 
 # Clearly, foo.regroup becomes a factor type variable, it contain different 
 # categories belongs to each elements in foo.
+
+
+
+
+## By default, right = True, which means the interval is closed at right, i.e., (a,b]
+#	If we set right = F, then we have closed side at the left, i.e., [a,b)
+foo = c(1,2.3, 3, 5, 10.5, 40, 100)
+interval = c(0,3,10,40,300)
+foo.regroup = cut(foo, breaks = interval, right = F)
+print(foo.regroup)
+# [1] [0,3)    [0,3)    [3,10)   [3,10)   [10,40)  [40,300) [40,300)
+# Levels: [0,3) [3,10) [10,40) [40,300)
+
+
+
+
+## include.lowest		allows us to include the boundary value (max or min)
+# recall, if we set right = F, then,
+#Levels: (0,3] (3,10] (10,40] (40,300]		0 is not included
+# If we set right = T,
+# Levels: [0,3) [3,10) [10,40) [40,300)		300 is not included
+# to include the boundary level, we can specify that include.lowest = T
+
+foo = c(1,2.3, 3, 5, 10.5, 40, 100)
+interval = c(0,3,10,40,300)
+foo.regroup = cut(foo, breaks = interval, right = T, include.lowest = T)
+print(foo.regroup)
+#[1] [0,3]    [0,3]    [0,3]    (3,10]   (10,40]  (10,40]  (40,300]
+#Levels: [0,3] (3,10] (10,40] (40,300]
+
+
+
+
+
+
+##	relabel the levels
+#		cut() has an argument called "labels". We can rename the groups by labels
+
+foo = c(1,2.3, 3, 5, 10.5, 40, 100)
+interval = c(0,3,10,40,300)
+mylabel = c('lowest', 'mild_low', 'medium', 'high')
+foo.regroup = cut(foo, breaks = interval, right = T, include.lowest = T, labels = mylabel)
+print(foo.regroup)
+#[1] lowest   lowest   lowest   mild_low medium   medium   high
+#Levels: lowest mild_low medium high
+
+
+
+
+
+																														
+
+
+
+#--------------# Section 11 List
+
+###	Generate a list
+
+foo = list(c(1,2,3), matrix(1:9, 3,3), cbind("hello", "world"))
+print(foo)
+#[[1]]
+#[1] 1 2 3
+#
+#[[2]]
+#     [,1] [,2] [,3]
+#[1,]    1    4    7
+#[2,]    2    5    8
+#[3,]    3    6    9
+#
+#[[3]]
+#     [,1]    [,2]
+#[1,] "hello" "world"
+
+
+
+
+### Indexing for the list
+# same as indexing in the vector
+
+foo.1 = foo[1]
+print(foo.1)
+#[[1]]
+#[1] 1 2 3
+
+
+
+
+
+
+
+### name each subset in the list.
+
+#[[1]]
+#[1] 1 2 3
+#
+#[[2]]
+#     [,1] [,2] [,3]
+#[1,]    1    4    7
+#[2,]    2    5    8
+#[3,]    3    6    9
+#
+#[[3]]
+#     [,1]    [,2]
+#[1,] "hello" "world"
+
+
+#Here, each subset is named by the index, i.e., [[1]], [[2]], [[3]]
+# We can give them a name by using 		names(list_obj)
+
+names(foo) = c('a vector', 'a matrix', 'a vector of string')
+print(foo)
+#$`a vector`
+#[1] 1 2 3
+#
+#$`a matrix`
+#     [,1] [,2] [,3]
+#[1,]    1    4    7
+#[2,]    2    5    8
+#[3,]    3    6    9
+#
+#$`a vector of string`
+#     [,1]    [,2]
+#[1,] "hello" "world"
+#
+
+
+
+### navigate list by name
+# By giving each subset a name, we can find each subset by their names
+# $ sign specifies one element in the parent obj
+# parent_obj$child_obj
+
+my_matrix = foo$`a matrix`
+print(my_matrix)
+#     [,1] [,2] [,3]
+#[1,]    1    4    7
+#[2,]    2    5    8
+#[3,]    3    6    9
+
+
+
+
+### Nesting
+## You can add a subset to the list by using foo$<new subset>
+# syntax is similar to df['new_subset'] = obj in pandas.
+
+foo = list(c(1:5), c(T,F,T,F))
+names(foo) = c('v', 'bool')
+print(foo)
+
+foo$name = c('harry', 'synferlo')
+print(foo)
+
+#$v
+#[1] 1 2 3 4 5
+#
+#$bool
+#[1]  TRUE FALSE  TRUE FALSE
+#
+#$name
+#[1] "harry"    "synferlo"
+
+
+
+# you can also nest a new item to an existing subset
+# But it will change the structure of the existing subset
+
+foo$bool$name = c('harry', 'synferlo')
+print(foo)
+#$v
+#[1] 1 2 3 4 5
+#
+#$bool
+#$bool[[1]]
+#[1] TRUE
+#
+#$bool[[2]]
+#[1] FALSE
+#
+#$bool[[3]]
+#[1] TRUE
+#
+#$bool[[4]]
+#[1] FALSE
+#
+#$bool$name
+#[1] "harry"    "synferlo"
+#
+#
+#$name
+#[1] "harry"    "synferlo"
+
+
+
+
+
+
+
+
+
+#--------------# Section 12 DataFrame
+
+### Generate a dataframe
+## Syntax
+
+#df = data.frame(
+#								col1 = c(),
+#								col2 = c(),
+#								col3 = c()
+#)
+
+# R will use name of col1 as column name.
+
+
+
+df = data.frame(
+								name	= c('synferlo', 'harry', 'adam'),
+								age		= c(24,26,30),
+								gender= c('M', 'F', 'M')
+)
+
+print(df)
+#      name age gender
+#1 synferlo  24      M
+#2    harry  26      F
+#3     adam  30      M
+
+
+
+
+
+## print column names of a dataframe
+print(names(df))
+print(colnames(df))
+
+
+
+### Indexing
+
+# df[i] will find the ith column in a dataframe type
+
+a = df[1]
+print(a)
+
+#      name
+#1 synferlo
+#2    harry
+#3     adam
+
+
+# if you want the same form as df.iloc[].values,
+# use: 	df[row, col]
+b = df[,1]
+print(b)
+# [1] "synferlo" "harry"    "adam"
+
+
+# first row 
+c = df[1,]
+print(c)
+
+
+
+
+# find by sub-element
+a = df$age
+print(a)
+# [1] 24 26 30
+
+
+# shape of a df
+print(dim(df))
+# [1] 3 3
+print(nrow(df))
+# [1] 3
+
+
+
+### merge df
+print(df)
+#      name age gender
+#1 synferlo  24      M
+#2    harry  26      F
+#3     adam  30      M
+
+
+new_obs = c('Tom', 40, 'M')
+df = rbind(df, new_obs)
+print(df)
+#      name age gender
+#1 synferlo  24      M
+#2    harry  26      F
+#3     adam  30      M
+#4      Tom  40      M
+
+
+
+edu = rep('phd', each = 4)
+# [1] "phd" "phd" "phd" "phd"
+
+df = cbind(df, edu)
+print(df)
+#      name age gender edu
+#1 synferlo  24      M phd
+#2    harry  26      F phd
+#3     adam  30      M phd
+#4      Tom  40      M phd
+
+
+
+
+
+
+### Modify values in the dataframe
+
+# I want to add a col of age*2
+# convert age to numeric value first
+
+df$age = sapply(df$age, as.numeric)
+df$age2 = df$age * 2
+print(df)
+
+
+
+### subset by logical condition
+# extrac obs with age2 > 50
+# DON'T forget ','		[row, col] You need specific row with all columns
+new_df = df[df$age2 > 50, ]
+print(new_df)
+#   name age gender edu age2
+#2 harry  26      F phd   52
+#3  adam  30      M phd   60
+#4   Tom  40      M phd   80
+
+
+
+
+## extract obs with specific columns
+# now i want age2 > 50, and only name and age columns
+
+new_df = df[df$age2 > 50, c('name', 'age')]
+print(new_df)
+#   name age
+#2 harry  26
+#3  adam  30
+#4   Tom  40
+
+
+
+# use logical operator
+# I want obs with age2 >60 or age2 < 50
+new_df = df[df$age2 > 60 | df$ age2 < 50, ]
+print(new_df)
+#      name age gender edu age2
+#1 synferlo  24      M phd   48
+#4      Tom  40      M phd   80
+
+
+
+
+
+
+
+
+
+
+
+#--------------# Section 13 Special values
+
+###	NaN (Not a Number)
+# use NaN if it is impossible to express the result of a calculation
+
+
+
+### NA (Not Available)
+# NA take one place.
+a = c(NA)
+print(length(a))
+# [1] 1
+
+
+
+
+### na.omit(obj)	can delete all NA and NaN
+foo = c(1, NA, 2, NaN, 300)
+print(foo)
+# [1]   1  NA   2 NaN 300
+foo = na.omit(foo)
+print(foo)
+# [1]   1   2 300
+# attr(,"na.action")
+# [1] 2 4
+# attr(,"class")
+# [1] "omit"
+
+# the 2nd element used to be NA, now is 2
+print(foo[2])
+# [1] 2
+
+
+
+
+
+### NULL
+# NULL is not counted as a place
+a = c(NULL)
+print(length(a))
+# [1] 0
+
+
+
+
+
+
+
+
+
+
+#--------------# Section 14 Types
+# Check attributes of an obj
+df = data.frame(
+								name = c('synferlo', 'harry'),
+								age = c(20, 30)
+)
+print(df)
+#      name age
+#1 synferlo  20
+#2    harry  30
+
+df.attr = attributes(df)
+print(df.attr)
+#	$names
+#	[1] "name" "age"
+#	
+#	$class
+#	[1] "data.frame"
+#	
+#	$row.names
+#	[1] 1 2
+
+print(df.attr[1])
+#$names
+#[1] "name" "age"
+
+
+
+## After you know what attrs, you can extract an attr by:
+# Method 1: indexing
+
+print(df.attr[1])
+#$names
+#[1] "name" "age"
+
+
+
+# Method 2: attr() function
+attr_name = attr(df, which = 'names')
+print(attr_name)
+# [1] "name" "age"
+
+
+
+
+
+
+
+
+
+
+
+#--------------# Section 15 Reading and Writing Files
+
+
+#------------	read files
+# Method 1
+# read.table(file = '', header = T/F, sep = '')
+# return a dataframe
+# You must specify sep = and header = T
+
+df = read.table('data/NewCleanData.csv', sep=',', header = T)
+print(head(df))
+
+# Then you can extract each col by df$<col name>
+price = df$Open_price
+print(head(price))
+# [1] 767.74 772.53 825.47 849.14 919.41 936.38
+ln_price = log(price)
+print(head(ln_price))
+# [1] 6.643451 6.649671 6.715953 6.744224 6.823732 6.842021
+
+
+
+
+### list all files in a directory 
+# list.files('<path>')
+
+# list files under current directory
+myfiles = list.files(getwd())
+print(myfiles)
+# [1] "NewCleanData.csv" "r_notes.r"
+
+
+# form abs path for each file using file.path()
+# file.path() is same as os.path.join()
+
+for(item in myfiles){
+	file_path = file.path(getwd(), item)
+	print(file_path)
+}
+#[1] "/home/synferlo/git/R_notes/NewCleanData.csv"
+#[1] "/home/synferlo/git/R_notes/r_notes.r"
+
+
+
+
+## Method 2
+# read.csv(file = '', header = T/F, stringAsFactors = T)
+df1 = read.csv('data/NewCleanData.csv', header = T)
+print(head(df1))
+#   X Open_price Close_price   Volume cir_supply      mktcap
+# 1 0     767.74      772.53 23448600   12114343  9358693020
+# 2 1     772.53      825.47 16837800   11408147  9417082760
+# 3 2     825.47      849.14 54171500   11850128 10062417390
+# 4 3     849.14      919.41 36344700   11258256 10350952914
+# 5 4     919.41      936.38 62414600   11969007 11207538944
+# 6 5     936.38      826.50 88584600   13810529 11414401972
+
+print(head(df1$Open_price))
+# [1] 767.74 772.53 825.47 849.14 919.41 936.38
+
+
+
+
+#------------	write files
+# write.table(x=df, file = '', sep = '', na = '')
+write.table(head(df1), file = 'data/sample.csv', sep = ',')
+
+
+
+
+
 
 
 
