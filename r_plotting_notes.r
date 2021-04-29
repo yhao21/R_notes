@@ -1,7 +1,7 @@
 
 #--------------# Section 1 Plot() Data
 
-df = read.csv('NewCleanData.csv')
+df = read.csv('data/NewCleanData.csv')
 print(head(df))
 #  X Open_price Close_price   Volume cir_supply      mktcap
 #1 0     767.74      772.53 23448600   12114343  9358693020
@@ -138,6 +138,28 @@ segments(
 				 col = 'blue',
 				 lty = 3,
 				 lwd = 1
+)
+dev.off()
+
+
+
+
+
+
+#--------------# Plot log scale
+# Same as Dwyer's plot.
+# Use level data, rescale to log, you have log scale on the vertical axis
+# But it still present the level value.
+df = read.csv("data/NewCleanData.csv")
+print(head(df))
+
+lnprice = log(df$Open_price)
+
+png('figures/log_scale_price.png')
+plot(df$Open_price,
+		 type = 'l',
+		 main = 'Bitcoin Price (log)',
+		 log = 'y'
 )
 dev.off()
 
