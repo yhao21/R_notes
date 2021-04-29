@@ -1041,4 +1041,86 @@ print(result)
 
 
 
+#--------------# Section 10 Factors
+### Generate a factor
+# "factors" is used to form categorical data. factor() function
+# generate a factor by using factor(obj) function
+# Notice, you can NOT do this to generate factor: factor("female", "male", "male","female")
+
+foo = c("female", "male", "male","female")
+f1 = factor(foo)
+print(f1)
+#[1] female male   male   female
+#Levels: female male
+
+
+# "levels" is the attribute of factor() function.
+# it return a list contain all different values in the factor obj. Here only female and male
+# levels(factor obj) return the levles of a factor
+
+f1.level = levels(f1)
+print(f1.level)
+# [1] "female" "male"
+
+
+
+
+### relabel samples
+# You can relabel instance by overwrite the level. 
+# For example, I want to replace all male by A, replace all female by B
+
+print(f1)
+# [1] female male   male   female
+# Levels: female male
+levels(f1) = c("B","A")
+print(f1)
+# [1] B A A B
+# Levels: B A
+
+
+
+
+
+
+
+### Ordering in the factor
+# Ordering allow you to compare the value among elements in specific order.
+
+# Now if you compare these two words, it is based on binary value. book > apple
+# This is not what we want. We can set specific order, and let apple > book
+foo = c('book', 'apple')
+print(foo[1]>foo[2])
+# [1] TRUE
+
+
+# set levels in a vector, and let ordered = True. Now, we manually set book < apple
+foo.fac = factor(foo, levels = c('book','apple'), ordered = T)
+print(foo.fac)
+# [1] book  apple
+# Levels: book < apple
+
+# Check
+print(foo.fac[2] > foo.fac[1])
+# [1] TRUE
+
+
+
+
+
+### Cutting, regrouping
+# you can use cut() to regroup elements.
+# I want to regroup them into four groups:
+# (0,3], (3,10], (10, 40], (40, 300]
+foo = c(1,2.3, 3, 5, 10.5, 40, 100)
+interval = c(0,3,10,40,300)
+foo.regroup = cut(foo, breaks = interval)
+print(foo.regroup)
+#[1] (0,3]    (0,3]    (0,3]    (3,10]   (10,40]  (10,40]  (40,300]
+#Levels: (0,3] (3,10] (10,40] (40,300]
+
+# Clearly, foo.regroup becomes a factor type variable, it contain different 
+# categories belongs to each elements in foo.
+
+
+
 
