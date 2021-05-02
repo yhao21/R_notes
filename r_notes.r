@@ -90,7 +90,7 @@ df$age = sapply(df$age, as.numeric)
 # is.vector()
 # is.logical()
 
-
+# !is.integer()				not an integer
 
 ### as.type()		convert to specific type
 
