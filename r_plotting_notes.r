@@ -1,3 +1,4 @@
+library(plyr)
 
 #--------------# Section 1 Plot() Data
 
@@ -192,6 +193,50 @@ dev.off()
 
 
 
+
+
+
+#--------------# Section 3 Barplots, Pie charts
+df = read.csv('data/NewCleanData.csv')
+
+price_classification = function(RV){
+		result_list = c()
+		for(x in RV){
+				if(x < 1000){
+						result_list = c(result_list, 1)
+				} else if(x >= 1000 & x < 10000){
+						result_list = c(result_list, 2)
+				}	else if(x >= 10000){
+						result_list = c(result_list, 3)
+				}
+		}
+		return (result_list)
+}
+
+
+price_range = price_classification(df$Open_price)
+
+df = cbind(df, price_range)
+print(head(df))
+
+
+
+
+
+# barplot for price range
+# we have price range, then we need to count the frequency, and make
+# barplot. Note, argument for barplot() must be a vector or a matrix!!!
+# Hence, we cannot use count() from plyr.
+
+price_range_fre = table(df$price_range)
+
+
+png('figures/price_range.png')
+barplot(price_range_fre,
+				main = 'Price range',
+				names.arg = c('low', 'medium', 'high')
+)
+dev.off()
 
 
 
