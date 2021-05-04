@@ -271,6 +271,8 @@ print(seq.1)
 #		seq(from, to, length.out)
 #		length.out specifies how many number would be generated in this sequence
 #		It will generate 40 numbers from 3 to 27 with same step among them.
+seq.3 = seq(3,27, length = 40)
+# they are the same.
 seq.3 = seq(3,27, length.out = 40)
 print(seq.3)
 
