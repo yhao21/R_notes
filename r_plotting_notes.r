@@ -223,6 +223,7 @@ print(head(df))
 
 
 
+#----------------- barplot
 # barplot for price range
 # we have price range, then we need to count the frequency, and make
 # barplot. Note, argument for barplot() must be a vector or a matrix!!!
@@ -240,6 +241,111 @@ dev.off()
 
 
 
+
+
+
+
+
+
+#----------------- Pie chart
+
+png('figures/price_range_pie.png')
+pie(price_range_fre,
+		main = 'Price range',
+		col = c('gray', 'white', 'black'),
+		labels = c('low', 'medium', 'high')
+)
+dev.off()
+
+
+
+
+
+
+
+
+#----------------- Histograms
+# make sure the max value in the histogram is greater than the max value
+# in your dataset!!
+
+max(df$Open_price)
+# [1] 40816
+
+png('figures/price_range_histogram_15intervals.png')
+hist(df$Open_price,
+		 # recall seq() sequence function, seq(start, end, step)
+		 # here step means interval values, if step = 6, then, threshold
+		 # would be 0,6,12,....
+		 # this is not the same as in python!
+		 # if you want to generate exact amount out intervals, use length.out
+		 # seq(0,42000, length.out = 8) gives you 8 intervals.
+		 #breaks = seq(0,42000,6),
+		 breaks = seq(0,50000,10000),
+		 #breaks = seq(0,42000,length.out = 15),
+		 col = 'gray',
+		 main = 'BTC price',
+		 xlab = 'Intervals',
+		 ylab = 'Price'
+
+)
+dev.off()
+
+
+
+
+
+
+#----------------- Boxplot
+
+png('figures/price_range_box.png')
+boxplot(df$Open_price,
+				main = 'Price range'
+)
+dev.off()
+
+
+
+### multiple box in a plot.
+png('figures/info_box.png')
+boxplot(df$cir_supply,
+				df$Volume,
+				main = 'BTC INFO'
+)
+dev.off()
+
+
+
+
+
+
+
+#----------------- Scatter Plot
+
+price = df$Open_price
+png('figures/BTC_scatter.png')
+plot(df$Volume, price,
+		 type = 'p',
+		 xlab = 'Volume',
+		 ylab = 'supply'
+)
+
+dev.off()
+
+
+
+
+
+
+
+
+
+
+#----------------- Matrix of Plots
+png('figures/BTC_matrix_plot.png')
+pairs(df[,2:6],
+			col = df$price_range
+)
+dev.off()
 
 
 

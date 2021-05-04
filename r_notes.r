@@ -257,6 +257,8 @@ print(v3)
 ## Method 1
 #		seq(from, to, by), by:= step
 # 	seq.1 and seq.2 are exactly the same!
+# Note, here "by" specifies the length among intervals, i.e., 
+# seq(1,5,by = 2) would be: 1,3,5
 seq.1 = seq(from = 3, to = 27, by = 3)
 seq.2 = seq(3,27,3)
 print(seq.1)
