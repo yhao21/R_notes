@@ -460,6 +460,243 @@ dev.off()
 
 
 
+## pexp(q = , rate = )
+## qexp(p = , rate = )
+
+pexp(q = 3, rate = 0.2)
+# [1] 0.4511884 = cumulative probability (from cdf)
+# It says Pr(X <= 3) = 0.4511884
+
+qexp(p = 0.451, rate = 0.2)
+# [1] 2.998284 Checked.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###------### chi-square distribution
+# Chi-square sums of squared normal variates and is often related
+# to operations concerning sample variances of normally distributed data.
+
+
+# dchisq(x, df)
+# pchisq(q, df)
+# qchisq(p, df)
+# rchisq(n, df)
+
+
+
+# Since chi square is squared norm, clealy, its support is non negative.
+x = seq(0,5,length = 300)
+png('figures/Chi_square_Std_Normal.png')
+plot(x,
+		 dchisq(x, df = 1),
+		 type = 'l',
+		 main = 'Chi-square vs Std Normal',
+		 ylab = 'density',
+		 xlab = 'X'
+
+)
+lines(x,
+			dnorm(x),
+			lty = 2
+)
+dev.off()
+
+
+
+par_list = list(c(0.1, 2), c(3, 4), c(5, 5))
+png('figures/Chi_square.png')
+plot(x,
+		 dchisq(x, df = 1),
+		 type = 'l',
+		 main = 'Chi-square with diff df',
+		 ylab = 'density',
+		 xlab = 'X'
+)
+for (item in par_list){
+		lines(x,
+					dchisq(x, df = item[1]),
+					lty = item[2]
+		)
+}
+legend('topright',
+			 legend = c(
+									'df = 0.1',
+									'df = 1',
+									'df = 3', 
+									'df = 5'
+									),
+			 lty = c(2,1,4,5)
+)
+
+dev.off()
+
+
+
+
+
+
+
+
+
+
+#--------------#	Sampling Distribution
+# Details see sampling distribution part in 
+# "Common Knowledge for econometrics".
+
+
+x = seq(16, 28, length = 100)
+fx.sample = dnorm(x, mean = 22, 1.5/sqrt(5))
+fx.true = dnorm(x, mean = 22, 1.5)
+png('figures/sampling_vs_true_distribution.png')
+plot(x, 
+		 fx.true,
+		 main = 'sampling and true distribution',
+		 ylab = 'density',
+		 type = 'l',
+		 ylim = c(0,0.8)
+
+)
+lines(x,
+			fx.sample,
+			lwd = 2,
+			lty = 2
+)
+legend('topright', 
+			 legend = c('true distro', 'sampling distro'),
+			 lty = c(1,2)
+)
+dev.off()
+
+
+
+
+
+
+
+
+
+
+#--------------#	Confidence Intervals
+
+
+# compute critical values for 0.95 CI
+se = 1.5
+right_bound = qt(0.975, 4)
+# [1] 2.776445 right tail
+left_bound = qt(0.025, 4)
+# [1] -2.776445 left tail
+
+fx.bound = dt(right_bound, 4)
+
+
+
+x = seq(-4, 4, length = 100)
+png('figures/confidence_interval.png')
+plot(
+		 x,
+		 dt(x, 4),
+		 type = 'l'
+)
+abline(h = c(0),
+			 col = 'gray'
+
+)
+segments(
+				 x0 = c(left_bound, right_bound),
+				 y0 = c(0,0),
+				 x1 = c(left_bound, right_bound),
+				 y1 = rep(fx.bound, 2)
+)
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+#--------------#	Testing Means
+
+# t-test:
+# Let's test if the population mean is 80 by using a sample.
+
+# generate a sample
+n = 40
+# make sure we have the same generated numbers, set the seed
+set.seed(5)
+sample = rnorm(n, 80, 1.5)
+# compute the sample mean and SD
+sample_mean = mean(sample) 		# X = [1] 80.10174
+# sample SD: s
+sample_sd = sd(sample)				# s = [1] 1.651756
+sample_se = sample_sd/sqrt(n)	# [1] 0.2611655
+
+# T statistics:
+sample_T = (sample_mean - 80)/sample_se		# [1] 0.3895706
+
+# compute the p-value, i.e., the cumulative prob. using pt()
+# remember, sample_T is t value on the horizontal axis of the density.
+sample_p_value = pt(sample_T, n-1)		#	[1] 0.6505133
+
+# Clearly, p-value is much greater than 0.05. We fail to reject 
+# the null.
+
+
+
+png('figures/t-test.png')
+x = seq(-4,4,length = 100)
+plot(x,
+		 dt(x,n-1),
+		 type = 'l',
+		 main = 'Test the mean of 80',
+		 xlab = 't',
+		 ylab = 'density (DOF = 39)'
+
+)
+abline(h = c(0), col = 'gray')
+segments(
+				 x0 = sample_T,
+				 y0 = 0,
+				 x1 = sample_T,
+				 y1 = 0.4,
+				 lty = 3
+)
+
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
