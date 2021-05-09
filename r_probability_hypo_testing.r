@@ -638,7 +638,11 @@ dev.off()
 
 #--------------#	Testing Means
 
-# t-test:
+
+#-------------------
+### t-test:(Single Mean)
+
+# Method 1
 # Let's test if the population mean is 80 by using a sample.
 
 # generate a sample
@@ -692,7 +696,254 @@ dev.off()
 
 
 
+# Method 2
+# R has a built in function for t-test:
+# t.test(x = sample, mu = mean, alternative = '')
+# "alternative" can be “two.sided”, “less”, “greater”
 
+
+t.test(x = sample, mu = 80, alternative = 'less')
+
+#	        One Sample t-test
+#	
+#	data:  sample
+#	t = 0.38957, df = 39, p-value = 0.6505
+#	alternative hypothesis: true mean is less than 80
+#	95 percent confidence interval:
+#	     -Inf 80.54177
+#	sample estimates:
+#	mean of x
+#	 80.10174
+
+
+
+
+
+
+
+
+
+
+#-------------------
+### t-test:(Two Mean) 
+
+
+## unpooled variances
+# obs are unpaired, independent, and with unpooled var. 
+# Method 1
+
+
+# Generate data from N(76,2), N(80,2)
+set.seed(5)
+n1 = 44
+n2 = 31
+sample1 = rnorm(n1, 76, 2)
+sample2 = rnorm(n2, 80, 2)
+
+
+
+# Compute sample mean and se, i.e., s
+sample1.mean = mean(sample1)		# [1] 76.24008
+sample2.mean = mean(sample2)		# [1] 79.66198
+
+
+sample1.s = sd(sample1)/n1			# [1] 0.05069484
+sample2.s = sd(sample2)/n2			# [1] 0.04731536
+
+
+# Compute df:
+
+df.upper = ((sample1.s**2/n1) + (sample2.s**2/n2)) ** 2
+df.lower.left = (sample1.s**2/n1)**2/(n1-1)
+df.lower.right = (sample2.s**2/n2)**2/(n2-1)
+df.lower = df.lower.left + df.lower.right
+
+df = df.upper/df.lower					# [1] 67.39422
+
+
+
+# Compute t statistics
+
+t.upper = sample1.mean - sample2.mean
+t.lower = sqrt(
+							 (sample1.s**2/n1) + (sample2.s**2/n2)
+)
+# It is negative because we are doing a left-tailed test.
+sample.t = t.upper/t.lower			# [1] -299.4002
+
+# p-value
+pt(sample.t, df)								# [1] 2.560795e-107
+
+# Suppose we use 99 Confidence Interval, p-value here is clearly less than 0.01
+# Great, we reject the null. Hence miu_1 < miu_2. It is being verified.
+
+
+png('figures/t-test_two_mean.png')
+x = seq(-5,5, length = 2000)
+plot(x,
+		 dt(x, df),
+		 type = 'l',
+		 xlab = 't',
+		 ylab = 'density'
+
+
+)
+dev.off()
+
+
+
+
+
+# Method 2
+# Built-in Welch's t-test
+t.test(x = sample1, y = sample2, alternative = 'less', conf.level = 0.99)
+
+
+
+#	        Welch Two Sample t-test
+#	
+#	data:  sample1 and sample2
+#	t = -8.0105, df = 72.718, p-value = 6.891e-12
+#	alternative hypothesis: true difference in means is less than 0
+#	99 percent confidence interval:
+#	      -Inf -2.405759
+#	sample estimates:
+#	mean of x mean of y
+#	 76.24008  79.66198
+
+
+
+
+
+
+
+
+## pooled variance
+
+# Syntax: 
+# must specify var.equal = T
+
+#	t.test(x = sample1,
+#				 y = sample2,
+#				 alternative = 'two.sided',
+#				 conf.level = 0.95,
+#				 var.equal = T
+#	)
+
+
+
+
+
+
+
+
+
+
+#----------------
+# Paired/Dependent samples
+
+# page 414
+
+
+
+
+
+
+
+#----------------
+### Chi-square test: test for categorical variables 
+
+lty_index = 2
+x = seq(0,15, length = 100)
+png('figures/Chi-square_1_5_10.png')
+plot(x,
+		 dchisq(x, 1),
+		 type = 'l'
+)
+
+for (i in c(5,10)){
+		lines(x,
+					dchisq(x, i),
+					lty = lty_index,
+		)
+		lty_index = lty_index + 2
+}
+legend('topright',
+			 legend = c('df = 1', 'df = 5', 'df = 10'),
+			 lty = c(1, 2, 4)
+)
+dev.off()
+
+
+
+
+## test example:
+
+# Suppose data fall in three categories, 1,2,3.
+# step 1: generate data
+
+sample = c(2,3,2,3,2,1,3,3,2,2,3,2,2,2,3,3,3,2,3,2,2,2,1,3,2,2,2,1,2,2,3,2,2,2,2,1,2,1,1,1,2,2,2,3,1,2,1,2,1,2,1,3,3)
+
+n = length(sample)		# [1] 53
+
+# step 2: compute O_i
+sample.table = table(sample)
+sample.table
+		#		sample
+		#		 1  2  3	-> category i
+		#		11 28 14	-> O_i
+
+# We can also comute the actual pai_i by dividing sample.table by n
+# but we don't need to to form the test statistics
+pai_i = sample.table/n
+pai_i
+		#	        1         2         3		-> i
+		#	0.2075472 0.5283019 0.2641509		-> pai_i
+
+# step 3: compute pai_0(i), the expected proportion,
+pai_i_expected = (1/3)*n		# [1] 17.66667
+
+
+# step 4: compute test statistics kai^2
+
+kai_sq = sum(
+						 (sample.table - pai_i_expected)**2/pai_i_expected
+)							# kai_sq = 9.320755
+
+
+# step 5: compute p-value
+# Note, pchisq() give the cumulative prob. from CDF. We need to
+# subtract it by 1 to get the area for right tail.
+
+df = 3-1
+p_value = 1 - pchisq(kai_sq, df)		#[1] 0.009462891
+
+# Clearly, it is less than 0.001 significant level. We can reject the
+# null. The data do not suggest that the proportions of each category
+# are same.
+# We can also check it by printing out the proportion, pai_i
+sample.table/n
+#	        1         2         3
+#	0.2075472 0.5283019 0.2641509
+
+# Clearly, not the same.
+
+
+# Now plot the density
+
+x = seq(0,15, length = 100)
+png('figures/single_categorical_chisq_test.png')
+plot(
+		 x,
+		 dchisq(x, 3),
+		 type = 'l',
+		 xlab = 'Chi-square',
+		 ylab = 'density(df = 2)',
+		 main = 'Chi-square test for single categorical variable'
+)
+abline(h = c(0), col = 'gray')
+abline(v = c(kai_sq), col = 'gray')
+dev.off()
 
 
 
