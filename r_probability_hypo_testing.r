@@ -850,8 +850,8 @@ t.test(x = sample1, y = sample2, alternative = 'less', conf.level = 0.99)
 
 
 
-#----------------
-### Chi-square test: test for categorical variables 
+#---------------- Chi-square test for categorical variables
+### Single categorical variable
 
 lty_index = 2
 x = seq(0,15, length = 100)
@@ -875,7 +875,7 @@ legend('topright',
 dev.off()
 
 
-
+### Method 1: Write your own chi-square test
 
 ## test example:
 
@@ -944,6 +944,76 @@ plot(
 abline(h = c(0), col = 'gray')
 abline(v = c(kai_sq), col = 'gray')
 dev.off()
+
+
+
+
+
+### Method 2:
+# R has a built-in function for chi-square test.
+
+
+# NOTICE: this test function require the vector of
+#	the obs Frequencies! 
+# DO NOT pass raw sample into it.
+
+chisq.test(x = sample.table)
+
+#	        Chi-squared test for given probabilities
+#	
+#	data:  sample.table
+#	X-squared = 9.3208, df = 2, p-value = 0.009463
+
+
+
+## If we assume the categories are not uniformly distributed,
+# we need to specify the "p" for the assumed proportion we want
+# to test.
+
+# null hypo: pai_1 = 0.25, pai_2 = 0.5, pai_3 = 0.25
+# alt. hypo: H_0 is incorrect.
+
+chisq.test(x = sample.table, p = c(0.25, 0.5, 0.25))
+#        Chi-squared test for given probabilities
+#
+#data:  sample.table
+#X-squared = 0.50943, df = 2, p-value = 0.7751
+
+# Now, we cannot reject the null
+
+
+
+
+
+
+
+### Two categorical variables
+
+# Generate two variables:
+
+sample = matrix(
+								c(20,32,8,52,9,72,8,32,16,64,30,12), 4,3,
+								dimnames = list(
+																c("Injection", 'Tablet','Laser','Herbal'),
+																c('None','Partial','Full')
+								)
+)
+
+#	          None Partial Full
+#	Injection   20       9   16
+#	Tablet      32      72   64
+#	Laser        8       8   30
+#	Herbal      52      32   12
+
+
+## built-in test
+
+chisq.test(x = sample)
+
+#	        Pearson's Chi-squared test
+#	
+#	data:  sample
+#	X-squared = 66.166, df = 6, p-value = 2.492e-12
 
 
 
