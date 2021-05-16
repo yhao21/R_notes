@@ -349,3 +349,51 @@ dev.off()
 
 
 
+
+
+
+
+
+
+
+#--------------#	Plot data with date on the horizontal axis
+
+
+df = read.csv('data/BTC_with_date.csv')
+print(head(df))
+
+
+
+# Note, here '%Y-%m-%d' specify the form of the date in your data.
+# It must be in the same form of your raw data, o.w., it would return
+# NA. For example, the date info in your data is in the following form:
+# 2021-05-20
+# Then you must specify '%Y-%m-%d' in the as.Date()
+
+png('figures/plot_with_data.png')
+df$Date = as.Date(df$Date, '%Y-%m-%d')
+# xaxt: axes and text
+plot(Open_price~Date, df, xaxt = 'n', type = 'l')
+axis(1, df$Date, format(df$Date, '%b %d'), cex.axis = .7)
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

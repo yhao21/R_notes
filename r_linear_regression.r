@@ -391,6 +391,274 @@ summary(result)
 
 
 
+#--------------#	Partial F-test
+
+# Use anova(model_1, model_2) to conduct a F-test. Pass the reduced 
+# model in model_1, and the complex one in model_2 place.
+
+
+redu_model = lm(norm_price~norm_volume+norm_supply, data = df)
+complex_model = lm(norm_price~norm_volume*norm_supply, data = df)
+
+anova(redu_model, complex_model)
+
+# The p-value is less than the significant level, we reject the null
+# that the coefs of all additional terms are equal to zero. Hence,
+# the complex model does improve the fitness.
+
+# Analysis of Variance Table
+# 
+# Model 1: norm_price ~ norm_volume + norm_supply
+# Model 2: norm_price ~ norm_volume * norm_supply
+#   Res.Df    RSS Df Sum of Sq      F    Pr(>F)
+# 1   2570 1029.8
+# 2   2569 1023.6  1    6.2622 15.717 7.556e-05 ***
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+
+
+
+
+
+
+
+
+
+
+#--------------#	Forward selection
+
+
+### step 1: start with intercept-only model
+
+model1 = lm(norm_price~1, data = df)
+summary(model1)
+
+# Call:
+# lm(formula = norm_price ~ 1, data = df)
+# 
+# Residuals:
+#     Min      1Q  Median      3Q     Max
+# -0.8381 -0.7852 -0.3707  0.6342  6.6742
+# 
+# Coefficients:
+#               Estimate Std. Error t value Pr(>|t|)
+# (Intercept) -2.036e-16  1.971e-02       0        1
+# 
+# Residual standard error: 1 on 2572 degrees of freedom
+
+
+
+
+### Step 2: Use add1() to conduct a series of test for the next
+### additional term.
+# test = 'F' conducting a partial F-test.
+
+## Note, dot in '.~.' have the same meaning in regular expression.
+## first dot for the response variable, second dot for all the 
+## potential variables.
+
+add1(model1, scope = .~.+norm_supply+norm_volume, test = 'F')
+
+# Single term additions
+# 
+# Model:
+# norm_price ~ 1
+#             Df Sum of Sq    RSS     AIC F value    Pr(>F)
+# <none>                   2572.0     1.0
+# norm_supply  1    1173.3 1398.7 -1564.4  2156.8 < 2.2e-16 ***
+# norm_volume  1    1301.8 1270.2 -1812.3  2635.0 < 2.2e-16 ***
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+
+model2 = update(model1, formula = .~. + norm_supply)
+summary(model2)
+
+
+add1(model2, scope = .~.+norm_volume, test = 'F')
+
+
+
+#--------------#	Backward selection
+
+
+model1 = lm(norm_price~norm_volume*norm_supply, data = df)
+summary(model1)
+
+drop1(model1, test = 'F')
+
+# Single term deletions
+# 
+# Model:
+# norm_price ~ norm_volume * norm_supply
+#                         Df Sum of Sq    RSS     AIC F value    Pr(>F)
+# 
+# <none>                               1023.6 -2363.8
+# 
+# norm_volume:norm_supply  1    6.2622 1029.8 -2350.1  15.717 7.556e-05 **
+# *
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+
+
+# use update(model1, .~.-norm_volume*norm_supply) to drop a term.
+# Since this interaction term is significant, we don't want to drop it.
+
+
+
+
+
+#--------------#	stepwise AIC selection
+
+
+
+# Let's start with the intercept-only model, and use the built-in 
+# function to conduct a stepwise AIC selection
+
+
+model1 = lm(norm_price~1, data = df)
+print('------------------')
+stepwise_model_selection = step(model1, 
+																scope = .~. + norm_volume*norm_supply)
+
+#
+
+
+
+
+#   Start:  AIC=1
+#   norm_price ~ 1
+#   
+#                 Df Sum of Sq    RSS     AIC
+#   + norm_volume  1    1301.8 1270.2 -1812.3
+#   + norm_supply  1    1173.3 1398.7 -1564.4
+#   <none>                     2572.0     1.0
+#   
+#   Step:  AIC=-1812.29
+#   norm_price ~ norm_volume
+#   
+#                 Df Sum of Sq    RSS     AIC
+#   + norm_supply  1    240.37 1029.8 -2350.1
+#   <none>                     1270.2 -1812.3
+#   - norm_volume  1   1301.81 2572.0     1.0
+#   
+#   Step:  AIC=-2350.06
+#   norm_price ~ norm_volume + norm_supply
+#   
+#                             Df Sum of Sq    RSS     AIC
+#   + norm_volume:norm_supply  1      6.26 1023.6 -2363.8
+#   <none>                                 1029.8 -2350.1
+#   - norm_supply              1    240.37 1270.2 -1812.3
+#   - norm_volume              1    368.83 1398.7 -1564.4
+#   
+#   Step:  AIC=-2363.75
+#   norm_price ~ norm_volume + norm_supply + norm_volume:norm_supply
+#   
+#                             Df Sum of Sq    RSS     AIC
+#   <none>                                 1023.6 -2363.8
+#   - norm_volume:norm_supply  1    6.2622 1029.8 -2350.1
+
+
+
+print('===========')
+summary(stepwise_model_selection)
+
+# Call:
+# lm(formula = norm_price ~ norm_volume + norm_supply + norm_volume:norm_
+# supply,
+#     data = df)
+# 
+# Residuals:
+#     Min      1Q  Median      3Q     Max
+# -2.4287 -0.3767 -0.1075  0.2357  4.5384
+# 
+# Coefficients:
+#                         Estimate Std. Error t value Pr(>|t|)
+# (Intercept)              0.05447    0.01854   2.938  0.00333 **
+# norm_volume              0.57832    0.02996  19.305  < 2e-16 ***
+# norm_supply              0.33805    0.01968  17.179  < 2e-16 ***
+# norm_volume:norm_supply -0.08957    0.02259  -3.964 7.56e-05 ***
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 0.6312 on 2569 degrees of freedom
+# Multiple R-squared:  0.602,     Adjusted R-squared:  0.6016
+# F-statistic:  1295 on 3 and 2569 DF,  p-value: < 2.2e-16
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#--------------#	Residual diagnostic
+
+
+# You can use plot() on a lm() obj, to show all six types of 
+# diagnostic plots. By specifying 'which = i', you would obtain the
+# ith plots.
+
+
+# Recall, use par(mfrow = c(row, col)) to combine multiple figures
+
+
+model1 = lm(norm_price~norm_supply*norm_volume, data = df)
+png('figures/residual_diagnostic_plots.png')
+par(mfrow = c(3,2))
+plot(model1, which = 1)
+plot(model1, which = 2)
+plot(model1, which = 3)
+plot(model1, which = 4)
+plot(model1, which = 5)
+plot(model1, which = 6)
+dev.off()
+
+
+
+###--------### Test normality
+
+#--------- Shapiro.test
+# null: data are normally distributed.
+
+# By first, we need to extract the standardized resisuals of the fitted
+# model using rstandard(regression_model)
+
+model1 = lm(norm_price~norm_volume*norm_supply, df)
+shapiro.test(rstandard(model1))
+#         Shapiro-Wilk normality test
+# 
+# data:  rstandard(model1)
+# W = 0.84736, p-value < 2.2e-16
+
+
+# Here, we reject the null, hence, the data are not normally distributed. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
