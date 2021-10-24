@@ -649,12 +649,94 @@ shapiro.test(rstandard(model1))
 
 
 
+#--------------#	Calculating the leverage
+# R has a built-in function to compute the leverage. 
+# hatvalues(regression model)
+
+
+model0 = lm(norm_price~norm_volume, data = df)
+vol_leverage = hatvalues(model0)
+
+# now we can plot the leverage-volume scatterplot.
+png('figures/volume_leverage.png')
+plot(df$norm_volume,
+		 vol_leverage,
+		 xlab = 'volume',
+		 ylab = 'leverage'
+)
+dev.off()
+
+#--------------#	Cook's Distance
+
+cook = cooks.distance(model0)
+png('figures/cooks_distance_vol.png')
+plot(norm_volume, cook, data = df, xlab = 'volume', ylab = 'cooks')
+dev.off()
+
+
+png('figures/cooks_distance_built_in_plot.png')
+plot(model0, which = 4)
+dev.off()
+
+
+
+png('figures/cooks_distance_with_4-n.png')
+plot(model0, which = 4)
+abline(h = 4/length(cook), lty = 2)
+dev.off()
 
 
 
 
 
 
+
+#--------------#	Collinearity
+
+df_raw = read.csv('data/NewCleanData.csv')
+
+mktcap = df_raw$mktcap
+supply = df_raw$cir_supply
+price = df_raw$Open_price
+volume = df_raw$Volume
+
+norm_mktcap = (mktcap - mean(mktcap))/sd(mktcap)
+df$norm_mktcap = norm_mktcap
+#png('figures/mktcap_price.png')
+#plot(norm_price~norm_mktcap, df)
+#dev.off()
+
+
+cor(supply, volume)
+
+#coli_result = lm(norm_price~norm_supply*norm_volume*norm_mktcap, df)
+#summary(coli_result)
+
+
+# Call:
+# lm(formula = norm_price ~ norm_supply * norm_volume * norm_mktcap,
+#     data = df)
+# 
+# Residuals:
+#       Min        1Q    Median        3Q       Max
+# -0.183953 -0.007375 -0.003806  0.007941  0.296063
+# 
+# Coefficients:
+#                                       Estimate Std. Error t value Pr(>|t|)
+# (Intercept)                          0.0292993  0.0011135   26.31   <2e-16 ***
+# norm_supply                         -0.0280827  0.0012368  -22.71   <2e-16 ***
+# norm_volume                         -0.0382933  0.0019248  -19.89   <2e-16 ***
+# norm_mktcap                          1.0684006  0.0014527  735.45   <2e-16 ***
+# norm_supply:norm_volume              0.0212145  0.0016383   12.95   <2e-16 ***
+# norm_supply:norm_mktcap             -0.0469526  0.0013273  -35.37   <2e-16 ***
+# norm_volume:norm_mktcap             -0.0209536  0.0008223  -25.48   <2e-16 ***
+# norm_supply:norm_volume:norm_mktcap  0.0107844  0.0005387   20.02   <2e-16 ***
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 0.02917 on 2565 degrees of freedom
+# Multiple R-squared:  0.9992,    Adjusted R-squared:  0.9991
+# F-statistic: 4.315e+05 on 7 and 2565 DF,  p-value: < 2.2e-16
 
 
 

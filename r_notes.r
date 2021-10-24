@@ -1,5 +1,18 @@
 #--------------#	Section 0 Useful functions
 
+
+# check if two list or series are exactly the same, using identical(a,b)
+
+a = rep(1,2)
+b = rep(1,2)
+if (identical(a,b)){
+		print('yes')
+}
+
+
+
+
+
 # os.path.join() in R
 # list files under current directory
 myfiles = list.files(getwd())
