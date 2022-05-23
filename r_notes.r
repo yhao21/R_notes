@@ -262,6 +262,16 @@ print(v3)
 
 
 
+# append using for loop
+parameters = list(c(14,14,2), c(1,4,3))
+legends = c()
+for (i in parameters){
+		legends = c(legends, i[3])
+}
+print(legends)
+
+
+
 
 
 #--------------# Section 4 Sequence

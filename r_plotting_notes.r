@@ -74,6 +74,29 @@ dev.off()
 # legend		add a legend
 
 
+
+### add lines using lines()
+
+
+#Plot Beta pdf with various value of parameters
+x = seq(0,1, length = 10000)
+png('figures/Beta_pdf.png')
+plot(
+		 x,
+		 dbeta(x,14,14),
+		 type = 'l'
+)
+lines(
+		 x,
+		 dbeta(x,1,4),
+		 type = 'l'
+)
+dev.off()
+
+
+
+
+
 ###	abline
 png('figures/plot_abline.png')
 plot(c(1,3,5,10,4,14),
