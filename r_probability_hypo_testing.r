@@ -493,7 +493,7 @@ qexp(p = 0.451, rate = 0.2)
 
 
 # dchisq(x, df)
-# pchisq(q, df)
+# pchisq(q, df, lower.tail),			lower.tail = F, get prob(area) at right tail
 # qchisq(p, df)
 # rchisq(n, df)
 

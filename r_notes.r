@@ -1822,5 +1822,76 @@ write.table(head(df1), file = 'data/sample.csv', sep = ',')
 
 
 
+#=======================================================
+## Convert list item to matrix form
+#  x = matrix(unlist(x), ncol = dim(x)[2])
+
+
+
+
+
+
+
+
+#=======================================================
+###  Function return multiple variables
+
+#		get_statistics = function(beta, x, y){
+#				y_hat = x%*%beta
+#				ee = sum((y - y_hat)**2)
+#				sigma2 = ee/(dim(x)[1] - dim(x)[2])
+#				Var = sigma2*solve(t(x)%*%x)
+#				beta_std_err_matrix = sqrt(Var)
+#				beta_std_err = diag(beta_std_err_matrix)
+#		
+#				stats_result = cbind(beta, round(beta_std_err, 5))
+#				col_name = c('coef', 'std_err')
+#		
+#				# use a list to return multiple variables
+#				results = list('stats'=stats_result, 'col_name' = col_name)
+#				return(results)
+#		}
+
+#		stats_result = get_statistics(beta, x, y)
+#
+#		col_name = c('coef', 'std_err')
+#		colnames(stats_result$stats) = col_name
+#		rownames(stats_result$stats) = var_name
+#		print(stats_result$stats)
+
+
+
+
+#=======================================================
+#	Load csv file:
+#	
+#	df = read.csv('path_to_csv')
+#	attach(df)
+#	
+#	# By attaching df, we can call a variable in dataframe using its name instead of df$variable
+#	
+#	# without attach(df)
+#	model = lm(AudienceCount~ShowCount+ScreenCount+SeatCount, data = df)
+#
+#	# After attach df
+#	model = lm(AudienceCount~ShowCount+ScreenCount+SeatCount)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
